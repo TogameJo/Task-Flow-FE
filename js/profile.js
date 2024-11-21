@@ -136,3 +136,109 @@ function toggleMenu() {
         submenu.classList.toggle('open-wrap');
     }
 }
+// Trong phần xử lý submit form của profile.js
+updateProfileForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const file = avatarInput.files[0];
+    
+    if (!file) {
+        showMessage('Vui lòng chọn ảnh đại diện', true);
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const avatarData = e.target.result;
+            
+            // Lưu vào localStorage và emit event
+            localStorage.setItem('userAvatar', avatarData);
+            
+            // Emit storage event để các tab khác biết có sự thay đổi
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'userAvatar',
+                newValue: avatarData,
+                url: window.location.href
+            }));
+
+            showMessage('Change avatar successfully!', false);
+            
+            setTimeout(() => {
+                window.location.href = 'home.html';
+            }, 1500);
+        } catch (error) {
+            showMessage('Some error: ' + error.message, true);
+        }
+    };
+    reader.readAsDataURL(file);
+});
+document.addEventListener('DOMContentLoaded', function() {
+    // Kiểm tra đăng nhập
+    if (!localStorage.getItem('accessToken')) {
+        window.location.href = 'sign-in.html';
+        return;
+    }
+
+    loadUserInfo();
+
+    // Xử lý smooth scroll cho các internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetElement = document.querySelector(this.getAttribute('href'));
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+
+// Hàm load thông tin user
+async function loadUserInfo() {
+    // Lấy thông tin user từ localStorage
+    const userName = localStorage.getItem('userName') || 'User';
+    const userAvatar = localStorage.getItem('userAvatar') || '../assets/images/userdefault.png';
+
+    // Cập nhật tên user
+    const userNameElements = document.querySelectorAll('.user-name-info');
+    userNameElements.forEach(element => {
+        element.textContent = userName;
+    });
+
+    // Cập nhật avatar
+    const avatarElements = document.querySelectorAll('.admin-main-avatar, .user-pics-info');
+    avatarElements.forEach(element => {
+        element.src = userAvatar;
+        // Xử lý lỗi khi load ảnh
+        element.onerror = function() {
+            element.src = '../assets/images/userdefault.png';
+        };
+    });
+}
+
+// Lắng nghe sự kiện thay đổi trong localStorage
+window.addEventListener('storage', function(e) {
+    if (e.key === 'userName' || e.key === 'userAvatar') {
+        loadUserInfo();
+    }
+});
+
+// Hàm toggle menu
+function toggleMenu() {
+    const submenu = document.getElementById('Submenu');
+    if (submenu) {
+        submenu.classList.toggle('open-wrap');
+    }
+}
+
+// Hàm logout
+function logout() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    // Không xóa avatar để giữ lại ảnh đã cập nhật
+    window.location.href = 'sign-in.html';
+}

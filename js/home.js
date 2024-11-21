@@ -1,32 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Kiểm tra đăng nhập
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
+    if (!localStorage.getItem('accessToken')) {
         window.location.href = 'sign-in.html';
         return;
     }
 
-    // Hiển thị thông tin user
-    try {
-        const userDataString = localStorage.getItem('userData');
-        if (userDataString) {
-            const userData = JSON.parse(userDataString);
-            
-            // Hiển thị tên người dùng trong submenu
-            const usernameElement = document.querySelector('.user-name');
-            if (usernameElement) {
-                usernameElement.textContent = userData.name || 'User';
-            }
-
-            // Lấy và hiển thị avatar
-            const savedAvatar = localStorage.getItem('userAvatar');
-            const defaultAvatar = '../assets/images/userdefault.png';
-            
-            // Cập nhật tất cả các elements avatar
-            updateAllAvatars(savedAvatar || defaultAvatar);
-        }
-    } catch (error) {
-        console.error('Error parsing user data:', error);
-    }
+    loadUserInfo();
 
     // Xử lý smooth scroll cho các internal links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -42,33 +21,35 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Hàm cập nhật tất cả avatars
-function updateAllAvatars(avatarSrc) {
+// Hàm load thông tin user
+async function loadUserInfo() {
+    // Lấy thông tin user từ localStorage
+    const userName = localStorage.getItem('userName') || 'User';
+    const userAvatar = localStorage.getItem('userAvatar') || '../assets/images/userdefault.png';
+
+    // Cập nhật tên user
+    const userNameElements = document.querySelectorAll('.user-name-info');
+    userNameElements.forEach(element => {
+        element.textContent = userName;
+    });
+
+    // Cập nhật avatar
     const avatarElements = document.querySelectorAll('.admin-main-avatar, .user-pics-info');
-    avatarElements.forEach(avatar => {
-        avatar.src = avatarSrc;
-        avatar.onerror = function() {
-            avatar.src = '../assets/images/userdefault.png';
+    avatarElements.forEach(element => {
+        element.src = userAvatar;
+        // Xử lý lỗi khi load ảnh
+        element.onerror = function() {
+            element.src = '../assets/images/userdefault.png';
         };
     });
 }
 
-// Lắng nghe sự kiện thay đổi avatar
-window.addEventListener('avatarChanged', function() {
-    const newAvatar = localStorage.getItem('userAvatar');
-    if (newAvatar) {
-        updateAllAvatars(newAvatar);
+// Lắng nghe sự kiện thay đổi trong localStorage
+window.addEventListener('storage', function(e) {
+    if (e.key === 'userName' || e.key === 'userAvatar') {
+        loadUserInfo();
     }
 });
-
-// Hàm logout cập nhật
-function logout() {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userAvatar');
-    localStorage.removeItem('userData');
-    localStorage.removeItem('accessToken');
-    window.location.href = 'sign-in.html';
-}
 
 // Hàm toggle menu
 function toggleMenu() {
@@ -76,4 +57,13 @@ function toggleMenu() {
     if (submenu) {
         submenu.classList.toggle('open-wrap');
     }
+}
+
+// Hàm logout
+function logout() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    // Không xóa avatar để giữ lại ảnh đã cập nhật
+    window.location.href = 'sign-in.html';
 }
