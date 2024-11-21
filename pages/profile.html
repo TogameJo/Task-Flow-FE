@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="images/favicon/favicon-96x96.png">
+    <!-- css -->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <!-- font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Sen:wght@400..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <!-- icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Profile Update</title>
+    <link rel="favicon" href="../assets/images/favicon/favicon.ico">
+</head>
+<body class="body_profile">
+    <header class="header fixed">
+        <div class="main-content">
+            <div class="body">
+                <!-- logo -->
+                <a href="home.html" target="_self"><img src="../assets/images/logo2.png" alt="logo" class="logo"></a>
+                <!-- nav -->
+                <nav class="nav">
+                    <ul>
+                        <li class="active"><a href="home.html">Home</a></li>
+                        <li><a href="home.html#about-us">About</a></li>
+                        <li><a href="home.html#job-mana">Feedback</a></li>
+                        <li><a href="home.html#footer">Contact</a></li>
+                        <div>
+                            <li><a href="manager.html" class="manager-main-menu">Manager</a></li>
+                        </div>
+                        <div class="manager-menu-wrap" id="Manamenu">
+                            <div class="manager-menu">
+                                <div class="manager-items">
+                                    <a href="manager.html">Manager</a>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                </nav>
+                </nav>
+                <!-- btn -->
+                <div class="action">
+                    <div>
+                        <img src="../assets/images/userdefault.png" alt="avt" 
+                             class="admin-main-avatar" 
+                             id="user-avatar" 
+                             onclick="toggleMenu()">
+                    </div>
+                    <div class="sub-menu-wrap" id="Submenu">
+                        <div class="sub-menu">
+                            <div class="user-info">
+                                <img class="user-pics-info" src="../assets/images/userdefault.png" alt="avt">
+                                <h2 class="user-name-info" id="user-name">
+    
+                                </h2>
+                            </div>
+                            <hr>
+                            <a href="profile.html" class="menu-section">
+                                <div class="menu-section-icon"><i class="fa-solid fa-user"></i></div>
+                                <p>Edit Profile</p>
+                                <span>></span>
+                            </a>
+    
+                            <a href="settings.html" class="menu-section">
+                                <div class="menu-section-icon"><i class="fa-solid fa-gear"></i></div>
+                                <p>Setting & Privacy</p>
+                                <span>></span>
+                            </a>
+    
+                            <a href="support.html" class="menu-section">
+                                <div class="menu-section-icon"><i class="fa-solid fa-question"></i></div>
+                                <p>Help & Support</p>
+                                <span>></span>
+                            </a>
+    
+                            <a href="#" class="menu-section" onclick="logout(); return false;">
+                                <div class="menu-section-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+                                <p>Log Out</p>
+                                <span>></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="signup-box">
+        <h1>Update Your Profile</h1>
+        <h4>You almost there!</h4>
+        <div class="ano-container"></div>
+        <div id="message" class="message"></div>
+        
+        <form id="updateProfileForm">
+            <label for="avatar">Profile Picture</label>
+            <img id="avatarPreview" src="#" alt="Avatar Preview">
+            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+            <input type="submit" value="Update Profile">
+        </form>
+
+        <div class="homeback"><a href="home.html">Back to Home</a></div>
+    </div>
+    <script src="../js/profile.js"></script>
+</body>
+</html>

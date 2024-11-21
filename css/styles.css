@@ -1,0 +1,1088 @@
+/* ============================================================ Reset ================================================================ */
+* {
+    box-sizing: border-box; /* giúp kiểm soát tổng thể kích thước */
+}
+
+html {
+    font-size: 62.5%; /* quy đổi 1 rem = 10px */
+    --color--midnight: #0b2642;
+    --text-color-hero: #171100;
+    --background-image:linear-gradient(to bottom, #beebf8, #165096);
+    --bx-shadow:10px 10px 10px rgba(0, 0, 0, 0.4);
+    --btn-color:#086dff;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-size: 1.6rem;
+    /*height: 80rem;*/
+    /* background-image: linear-gradient(to bottom, #beebf8, #165096); */
+    font-family: "Roboto Flex", sans-serif;
+}
+
+/* ================== Common ================== */
+a {
+    text-decoration: none;
+}
+
+.main-content {
+    max-width: 1170px;
+    max-width: calc(100% - 40px); 
+    /* Khi thu nhỏ trình duyệt 2 bên vẫn cách 40px */
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.break-all{
+    word-break: break-all;
+}
+/* ================== Header ================== */
+.header {
+    height: 110px;
+}
+
+.header.fixed {
+    position: sticky;
+    top: -30px;
+    background-color: #fff;
+    box-shadow: 0 0 0 0.5px #17110026;
+    z-index: 1000;
+}
+
+.header .body {
+    display: flex;
+    align-items: center;
+    padding: 35px 0px 0px;
+}
+
+.logo {
+    width: 8vw;
+    height: auto;
+    margin-right: auto;
+    margin-left: 20px;
+    min-width: 80px;
+}
+
+.nav ul, .action ul {
+    display: flex;
+}
+
+.nav {
+    margin-left: auto;
+}
+
+.nav a {
+    position: relative;
+    color: #5f5b53;
+    font-size: 1.9rem;
+    margin: 8px 21px;
+}
+
+.main_body .nav li.active a,
+.nav a:hover {
+    color: #171100;
+    text-shadow: 0.8px 0 0 currentColor;
+}
+/* lớp giả gạch chân nav */
+.main_body .nav li.active :after {
+    position: absolute;
+    left: 0;
+    bottom: 0.1px;
+    display: block;
+    content: "";
+    width: 12px;
+    height: 2px;
+    border-radius: 1px;
+    background: #171100;
+}
+
+.btn {
+    display: block;
+    min-width: 100px;
+    padding: 18px 30px;
+    color: #fff;
+    text-align: center;
+    border-radius: 24.5px;
+    font-size: 1.6rem;
+    font-weight: 600;
+    background-color: #171100;
+}
+
+.header .btn-sign-up {
+    margin-left: 0;
+}
+
+.header .btn-sign-in {
+    margin-right: 10px;
+    margin-left: 49px;
+}
+
+.header .btn-sign-up:hover,
+.header .btn-sign-in:hover {
+    background-color: #000000a6;
+    text-decoration: underline;
+}
+
+
+/* ================== Hero ================== */
+.hero {
+    padding-top: 96px;
+    box-sizing: border-box;
+    background-image: var(--background-image);
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 0 90px 90px;
+    height: 70rem;
+}
+
+.hero-element .header {
+    color: var(--text-color-hero);
+    text-align: center;
+    font-size: clamp(4rem, 5vw, 6.4rem);
+    font-family: "Roboto Flex", sans-serif;
+    font-weight: 700;
+}
+
+.space {
+    width: 100%;
+    padding-top: 4rem;
+}
+
+.hero-txt {
+    color: var(--text-color-hero);
+    text-align: center;
+    font-weight: 500;
+}
+
+.hero-btn {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
+.join-us-btn {
+    background-color: var(--btn-color);
+    padding: 18px 48px;
+    margin-right: 15px;
+}
+
+.hero-btn a:nth-child(2) {
+    color: var(--text-color-hero);
+    font-weight: 600;
+    display: inline-block;
+    border-bottom: 2px solid var(--text-color-hero);
+    padding-bottom: 5px;
+}
+
+.hero-btn a:first-child:hover {
+    background-color: #024bb0;
+}
+
+.hero-icon {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    gap: 15rem;
+}
+
+.icon-text {
+    text-align: center;
+}
+.icon_introduce{
+    display: flex;
+    justify-content: center;
+}
+.hero-icon i {
+    font-size: 4rem;
+    color: var(--text-color-hero);
+}
+
+.hero-icon p {
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    margin-top: 2rem;
+    font-size: 1.6rem;
+    color: var(--text-color-hero);
+}
+.icon-bgr{
+    background-color: whitesmoke;
+    width: 7rem;
+    height: 7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 14px;
+    box-shadow: var(--bx-shadow);
+    transition: transform 0.24s ease;
+        /* thay đổi hình dạng icon, ease: chuyển động mượt */
+}
+.icon-bgr:hover{
+   transform: scale(1.2);
+    /* tăng kích thước 1.2 lần cả 4 phía  */
+}
+
+/* ===================About us================== */
+#about-us{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-family: "Poppins", sans-serif;
+}
+.about-content{
+    width: 80%;
+    display: block;
+    padding-top: 140px;
+}
+.about-content .about-title{
+    /* font-family: "Poppins", sans-serif; */
+    margin-bottom: 50px;
+}
+
+    /* tiêu đề của mục trong thanh nav */
+.title-section{
+    width: 100%;
+    font-weight: 600;
+    font-size: 35px;
+    color: var(--color--midnight);
+    text-transform: uppercase;
+    text-align: center;
+}
+    /* lớp giả gạch chân */
+.title-section:after{
+    content:"";
+    height: 5px;
+    width: 100px;
+    background-color: var(--color--midnight);
+    border-radius: 25px;
+    display: block;
+    margin: 10px auto;
+}
+.about-content .about-article{
+    float: left;
+    width: 55%;
+}
+.about-article p:first-child{
+    font-weight: 600;
+    text-align: center;
+    font-size: 2rem;
+    line-height: 3;
+}
+
+.about-content .about-article p:nth-child(2){
+    color: #a3a3a3;
+    font-size: 17px;
+    line-height: 1.25;
+}
+
+.about-content .about-article p:nth-child(3){
+    margin-top: 20px;
+    line-height: 1.25;
+}
+
+.about-content .about-article p:nth-child(4){
+    margin-top: 20px;
+    line-height: 1.25;
+}
+
+.about-content .about-img{
+    float: right;
+    width: 40%;
+    height: auto;
+    /* dài khối img = 40% khối content */
+}
+    
+.about-content .about-img img{
+    width: 87%;
+    height: auto;
+    box-shadow: var(--bx-shadow);
+    border-radius: 40px;
+}
+
+.about-content .about-btn{
+    margin-top: 25px;
+}
+
+.about-content .about-btn a{
+    padding: 8px 25px;
+    /* border: 1px solid black; */
+    background-color: var(--btn-color);
+    border-radius: 40px;
+    color: #fff;
+    font-size: 18px;
+    letter-spacing: 1.5px;
+}
+.about-content .about-btn a:hover{
+    background-color: #f28f92;
+    transition: 0.2s ease;
+}
+
+.about-content .about-social{
+    width: 100%;
+    clear: both;
+    /* xóa thuộc tính float trái phải */
+    margin-top: 50px;
+    text-align: center;
+}
+
+.about-content .about-social i{
+    color: #fff;
+    font-size: 30px;
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    background-color: #f28f92;
+    text-align: center;
+    line-height: 45px;
+    margin: 0px 5px;
+}
+
+.about-content .about-social i:hover{
+    background-color: var(--btn-color);
+    transition: 0.2s ease;
+    transform: scale(1.2);
+}
+
+    /* @media: Đây là một quy tắc trong CSS 
+    cho phép bạn áp dụng các kiểu dáng khác nhau dựa trên các đặc điểm của thiết bị, như kích thước màn hình. */
+@media screen and (max-width: 700px) {
+    /* Điều kiện thay đổi: chiều dài <= 768px */
+    .about-us .about-content{
+        width: 80%;
+        display: block;
+        margin: auto;
+    }
+    .about-content{
+        float:none;
+        width: 100%;
+        display: block;
+        margin-top: auto;
+    }
+    .about-content .about-img{
+        float: none;
+        width: 100%;
+        margin-top: 50px;
+    }
+    .about-content .about-img img{
+        width: 50%;
+        height: auto;
+        display: block;
+        margin: auto;
+    }
+    .about-content .about-article .about-btn{
+        text-align: center;
+    }
+    .about-content .about-article .about-btn a{
+        padding: 6px 15px;
+        font-size: 16px;
+    }
+    .about-content .about-social i{
+        font-size: 19px;
+        height: 35px;
+        width: 35px;
+        line-height: 35px;
+    }
+}
+/* ===================feedback================== */
+#job-mana{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+#job-mana .job-mana-content{
+    width: 80%;
+    display: block;
+    padding-top: 140px;
+    /* padding: 0 65px; */
+    font-family: "Poppins", sans-serif;
+}
+.job-content-top{
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.job-content-top .heading{
+    font-weight: 600;
+    /* text-align: center; */
+    font-size: 2rem;
+    line-height: 3;
+}
+.job-content-top .desc{
+    width: 490px;
+    font-size: 1.7rem;
+    color: #a3a3a3;
+    line-height: 1.67;
+}
+
+.job-content-top .controls{
+    display: flex;
+    gap: 18px;
+}
+.job-content-top .control-btn{
+    background: transparent;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.job-content-top .control-btn:hover{
+    cursor: pointer;
+    transition: 0.2s ease;
+    transform: scale(1.2);
+}
+.job-content-top .control-btn img{
+    width: 25px;
+}
+.job-content-bottom{
+    margin-top: 55px;
+    display: flex;
+    gap: 30px;
+}
+.job-content-bottom .feed-list{
+    box-shadow: 6px 6px 20px 2px rgba(0, 0, 0, 0.105);
+    border-radius: 0 0 12px 12px;
+}
+.job-content-bottom .feed-list .thumb{
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+}
+.feedback .feed-head{
+    margin-top: 22px;
+    display: flex;
+    justify-content: space-between;
+}
+.feedback .feed-head .title{
+    color: var(--text-color-hero);
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin-left: 22px;
+    line-height: 1.67;
+}
+.feedback .feed-head .rating{
+    margin-right: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.feedback .feed-head .star{
+    width: 15px;
+    margin-right: 5px;
+}
+.feedback .feed-head .star-value{
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #ffc700;
+}
+.feedback .feed-body{
+    margin-top: 18px;
+    height: 42px;
+}
+.feedback .article{
+    line-height: 1.3;
+    margin-left: 22px;
+    margin-right: 22px;
+    font-size: 1.6rem;
+    letter-spacing: 0.8px;
+}
+.feedback .user-rating{
+    display: flex;
+    justify-content: end;
+    margin-right: 22px;
+    margin-top: 35px;
+    margin-bottom: 20px;
+}
+.feedback .user-rating .user-avt{
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.feedback .user-rating .user-name{
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+/* =============footer============ */
+#footer{
+    margin-top: 250px;
+    padding-top: 20px;
+    background-color: #10375c;
+    width: 100%;
+}
+.title-section-contact{
+    width: 100%;
+    font-weight: 600;
+    font-size: 35px;
+    color: #fff;
+    text-transform: uppercase;
+    text-align: center;
+}
+.title-section-contact:after{
+    content:"";
+    height: 5px;
+    width: 100px;
+    background-color: #fff;
+    border-radius: 25px;
+    display: block;
+    margin: 10px auto;
+}
+#footer .container{
+    margin-top: 80px;
+    width: 80%;
+    margin-right:auto;
+    margin-left: auto;
+}
+#footer .footer-top{
+    font-family: "Open Sans", sans-serif;
+    display: grid;
+    grid-template-columns: 1fr 0.4fr 0.4fr 1fr;
+    column-gap: 78px;
+}
+#footer .footer-top .footer-column .logo1{
+    width: 40px;
+}
+#footer .footer-top .footer-column .logo2{
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 1.9rem;
+    color: #fff;
+}
+.footer-column-logo{
+    display: flex;
+    gap: 10px;
+    /* align-items: center; */
+}
+.footer-desc{
+    color: #a9b3bb;
+    margin-top: 21px;
+    font-size: 1.6rem;
+    line-height: 1.75;
+}
+.footer-heading{
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 500;
+    /* line-height: 2.5; */
+    /* margin-bottom: 20px; */
+}
+.footer-list{
+    margin: 20px 0px 28px;
+}
+.footer-link{
+    color: #a9b3bb;
+    font-style: 1.4rem;
+    line-height: 1.86;
+    white-space: nowrap;
+}
+.footer-link:hover{
+    text-decoration: underline;
+}
+.footer-item{
+    margin-bottom: 10px;
+}
+.footer-social{
+    display: flex;
+    gap: 25px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+.footer-social a{
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.footer-social i{
+    font-size: 25px;
+}
+.footer-social .fa-instagram{
+    color: #833ab4;
+    background: linear-gradient(to right, #833ab4, #fd1d1d, #fcb045);
+    -webkit-background-clip: text;
+        /* cắt background vào vùng chữ */
+    -webkit-text-fill-color: transparent;
+        /* làm cho icon(txt) trong suốt -> thấy màu */
+}
+.footer-social a:nth-child(3){
+    background-color: #0c64c5;
+}
+.footer-social .fa-linkedin-in{
+    color: #fff;
+    font-size: 20px;
+}
+.footer-social a:nth-child(4){
+    background-color: #65da6d;
+}
+.footer-social .fa-phone{
+    color: #fff;
+    font-size: 20px;
+}
+.footer-social a:hover{
+    transition: 0.2s ease;
+    transform: scale(1.2);
+}
+.footer-form{
+    margin-top: 20px;
+    display: flex;
+    column-gap: 15px;
+}
+.footer-form-imput{
+    width: 212px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    border: 1px solid #406181;
+    background: transparent;
+    color: #fff;
+}
+.footer-form-input::placeholder{
+    color: #9ca8b1;
+    font-size: 1.4rem;
+    line-height: 1.86;
+}
+.footer-form input[type="submit"]{
+    width: 108px;
+    height: 40px;
+    border-radius: 4px;
+    outline: none;
+    background: #2e80ce;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.6rem;
+}
+.footer-form input[type="submit"]:hover{
+    background-color: #074076;
+    cursor: pointer;
+}
+.footer-copyright{
+    border-top: 1px solid #406181;
+}
+.footer-copy-text{
+    padding: 28px 42px;
+    color: #aab3ba;
+    text-align: center;
+    font-size: 1.4rem;
+    line-height: 1.86;
+}
+/* ======================================================= Sign-Up =============================================================== */
+.body_register{
+    background-image: var(--background-image);
+    overflow: auto;
+}
+.signup-box {
+    width: 36rem;
+    height: 54rem;
+    margin: 20px auto 3px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: var(--bx-shadow);
+    position: relative;
+}
+
+.signup-box h1 {
+    font-size: 35px;
+    font-weight: 500;
+    text-align: center;
+    padding: 15px;
+}
+
+.signup-box h4 {
+    text-align: center;
+}
+.ano-container {
+    margin-bottom: 20px; /* Thêm khoảng cách dưới thông báo */
+}
+
+.text-anotation {
+    width: 100%;
+    text-align: center;
+    font-size: 1.6rem;
+    display: block; /* Đảm bảo nó hiển thị như một khối */
+    line-height:1.2;
+    margin-top:10px;
+}
+.text-success {
+    color: green;
+}
+.text-failed {
+    color: red;
+}
+form {
+    width: 300px;
+    margin-left: 20px;
+}
+
+form label {
+    display: flex;
+    margin-top: 20px;
+    font-size: 1.8rem;
+    margin-bottom: 3px;
+}
+
+form input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border: 1px solid grey;
+    border-radius: 6px;
+    outline: none;
+}
+.signin-box input[type="submit"],
+.signup-box input[type="submit"] {
+    width: 100%;
+    height: 35px;
+    margin-top: 20px;
+    border: none;
+    background-color: #165096;
+    color: #fff;
+    font-size: 2rem;
+}
+.signin-box input[type="submit"]:hover,
+.signup-box input[type="submit"]:hover {
+    background-color: #1650968d;
+    cursor: pointer;
+}
+.form-check{
+    margin-top: 20px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    text-wrap: nowrap;
+}
+.form-check input[type="checkbox"]{
+    width: 17px;
+    height: 17px;
+    margin-right: 6px;
+}
+.form-check label{
+    line-height: 1.2;
+}
+.form-check{
+    margin-top: 20px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    text-wrap: nowrap;
+}
+.form-check input[type="checkbox"]{
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+}
+.form-check label{
+    line-height: 1.2;
+    font-size:1.7rem;
+}
+.footer-policy {
+    text-align: center;
+    padding-top: 30px;
+    font-size: 1.6rem;
+}
+.footer-policy a{
+    color: blue;
+}
+.footer-policy a:active{
+    color: rgb(0, 0, 0);
+}
+
+.homeback {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.8rem;
+    padding-bototm:10px;
+}
+
+.homeback a {
+    text-decoration: none;
+    color: #165096;
+}
+
+.para {
+    text-align: center;
+    color: #fff;
+    margin-top: 15px;
+    font-size: 2rem;
+}
+
+.para a {
+    text-decoration: none;
+    color: #080808;
+}
+.register_after{
+    background-color: #000000a6;
+}
+.message{
+    text-align: center;
+}
+/* =============================================================== Sign-In ====================================================== */
+.body_login{
+    background-image: var(--background-image);
+    overflow: auto;
+}
+.signin-box {
+    width: 36rem;
+    height: 34rem;
+    margin: 120px auto auto;
+    background-color: #fff;
+    border-radius: 1rem;
+    box-shadow: var(--bx-shadow);
+}
+
+.signin-box h1 {
+    font-size: 3.5rem;
+    font-weight: 500;
+    text-align: center;
+    padding-top: 1.5rem;
+}
+
+.signin-box form {
+    width: 30rem;
+    margin: 2rem;
+}
+
+.signin-box form label {
+    display: flex;
+    margin-top: 2rem;
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+}
+
+.signin-box form input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border: 1px solid grey;
+    border-radius: 6px;
+    outline: none;
+}
+
+.para-2 {
+    text-align: center;
+    color: #fff;
+    margin-top: 15px;
+    font-size: 2rem;
+}
+
+.para-2 a {
+    text-decoration: none;
+    color: #080808;
+}
+.login_after{
+    background-color: #000000a6;
+}
+#errorMessage{
+    margin-top: 20px;
+    text-align: center;
+}
+/* ================================================admin home===================================================================== */
+.admin-main-avatar{
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 50px;
+    margin-left: 50px;
+    cursor: pointer;
+}
+.sub-menu-wrap{
+    position: absolute;
+    /* top:100%; */
+    right: 1%;
+    width: 320px;
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height 0.2s;
+}
+.sub-menu-wrap.open-wrap{
+    max-height: 420px;
+}
+.user-info .user-pics-info{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 16px;
+}
+.user-info{
+    display: flex;
+    align-items: center;
+}
+.user-info .user-name-info{
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+.sub-menu-wrap .sub-menu{
+    background-color: #f5f3f3;
+    padding: 20px 20px 3px 20px;
+    margin: 10px;
+    border-radius: 20px;
+}
+.sub-menu hr{
+    margin: 20px 0 20px;
+    /* border: 0px solid; */
+    width: 100%;
+    height: 1px;
+}
+.sub-menu .menu-section{
+    display: flex;
+    color: black;
+    margin-bottom: 20px;
+    align-items: center;
+}
+.menu-section .menu-section-icon{
+    border-radius: 50%;
+    background-color: rgb(184, 177, 177);
+    margin-right: 20px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.menu-section p{
+    font-size: 1.8rem;
+    transition: transform 0.2s;
+}
+.menu-section span{
+    font-size: 30px;
+    align-items: end;
+    position: absolute;
+    right: 30px;
+    font-weight: 300;
+    transition: transform 0.3s;
+}
+.menu-section:hover span{
+    transform: translateX(5px);
+}
+.menu-section:hover p{
+    font-weight: 500;
+}
+.manager-main-menu.active {
+    font-weight: 600;
+}
+.manager-menu-wrap{
+    position: absolute;
+    top:90%;
+    right: 4%;
+    width: 320px;
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height 0.2s;
+}
+.manager-menu-wrap.open-wrap{
+    max-height:200px;
+}
+.manager-menu{
+    background-color: #f5f3f3;
+    width: 200px;
+    height: 100px;
+    border-radius: 10px;
+}
+.manager-menu .manager-items{
+    padding-top: 20px;
+}
+.manager-menu .manager-items{
+    cursor: pointer;
+}
+/* ============================================user management================================================================ */
+.search input[type="text"]{
+    height: 34px;
+    width: 250px;
+    min-width: 40px;
+    margin-right: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.297);
+    border-radius: 4px;
+}
+.search{
+    position: relative;
+    right: 18%;
+    display: flex;
+    align-items: center;
+}
+.search a{
+    font-size: 25px;
+    cursor: pointer;
+}
+.header2{
+    height: 60px;
+    background-color: #086dff;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.header2 .home{
+    width: 100px;
+    gap: 12px;
+    display: flex;
+    color: #fff;
+    cursor: pointer;
+}
+.header2 .home1{
+    margin-left: 100px;
+}
+.header2 .user{
+    margin-left: 80px;
+}
+.header2 .job{
+    margin-left: 80px;
+}
+.header2 .home a:hover{
+    width: 100%;
+    background-color: #fff;
+    color: black;
+    border-radius: 10px;
+}
+.header2 .home i{
+    font-size: 24px;
+    text-decoration: none;
+    color: #fff;
+    align-self: center;
+}
+.header2 .home a{
+    font-size: 2rem;
+    text-wrap: nowrap;
+    align-self: end;
+    padding: 10px;
+    color: #fff;
+}
+.header2 .job{
+    margin-left: 30px;
+}
+.user-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-table th, .user-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.user-table th {
+    background-color: #f4f4f4;
+}
+
+.user-table button {
+    padding: 5px 10px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+.user-table button:hover {
+    opacity: 0.8;
+}
