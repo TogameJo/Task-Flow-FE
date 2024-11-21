@@ -87,9 +87,47 @@ document.addEventListener('DOMContentLoaded', function() {
 function showMessage(message, isError) {
     const messageDiv = document.getElementById('message');
     messageDiv.textContent = message;
-    messageDiv.className = `message ${isError ? 'error-message' : 'success-message'}`;
+    
+    // Thêm style cho message
+    messageDiv.style.padding = '10px 20px';
+    messageDiv.style.borderRadius = '5px';
+    messageDiv.style.marginTop = '10px';
+    messageDiv.style.textAlign = 'center';
+    messageDiv.style.fontWeight = '500';
+    
+    if (isError) {
+        // Style cho thông báo lỗi
+        messageDiv.style.backgroundColor = '#ffe6e6';
+        messageDiv.style.color = '#ff3333';
+        messageDiv.style.border = '1px solid #ff9999';
+    } else {
+        // Style cho thông báo thành công
+        messageDiv.style.backgroundColor = '#e6ffe6';
+        messageDiv.style.color = '#00cc00';
+        messageDiv.style.border = '1px solid #99ff99';
+    }
+    
     messageDiv.style.display = 'block';
+    
+    // Thêm animation fade in
+    messageDiv.style.animation = 'fadeIn 0.3s ease';
 }
+
+// Thêm keyframes animation vào head của document
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+`;
+document.head.appendChild(style);
 
 // Xử lý menu
 function toggleMenu() {
