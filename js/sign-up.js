@@ -13,6 +13,13 @@ document.querySelector('form').addEventListener('submit', async (e) => {
         return;
     }
 
+    // Kiểm tra mật khẩu
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d|.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+    if (!passwordRegex.test(password)) {
+        showMessage('Password must be at least 8 characters long, with at least one uppercase letter and one number or special character.', true);
+        return;
+    }
+
     // Chuẩn bị dữ liệu
     const registerData = {
         name: name,
@@ -42,7 +49,7 @@ document.querySelector('form').addEventListener('submit', async (e) => {
             if (data.message && data.message.includes('Email already exists')) {
                 showMessage('Email has been used.', true);
             } else {
-                showMessage('Email has been used.', true);
+                showMessage('An error occurred. Please try again.', true);
             }
         }
     } catch (error) {

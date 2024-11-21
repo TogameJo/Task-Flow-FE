@@ -5,25 +5,24 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    // Hiển thị thông tin user
     try {
-        // Lấy thông tin user từ localStorage và parse JSON
         const userDataString = localStorage.getItem('userData');
         if (userDataString) {
             const userData = JSON.parse(userDataString);
-            console.log("User Data:", userData); // Để debug
             
-            // Hiển thị tên người dùng trong submenu bằng id
-            const usernameElement = document.getElementById('user-name-info');
-            if (usernameElement && userData.name) {
-                usernameElement.textContent = userData.name;
+            // Hiển thị tên người dùng trong submenu
+            const usernameElement = document.querySelector('.user-name');
+            if (usernameElement) {
+                usernameElement.textContent = userData.name || 'User';
             }
 
-            // Hiển thị avatar
-            const avatarUrl = userData.avatar || '../assets/images/userdefault.png';
-            const avatarElements = document.querySelectorAll('.admin-main-avatar, .user-pics-info');
-            avatarElements.forEach(avatar => {
-                avatar.src = avatarUrl;
-            });
+            // Lấy và hiển thị avatar
+            const savedAvatar = localStorage.getItem('userAvatar');
+            const defaultAvatar = '../assets/images/userdefault.png';
+            
+            // Cập nhật tất cả các elements avatar
+            updateAllAvatars(savedAvatar || defaultAvatar);
         }
     } catch (error) {
         console.error('Error parsing user data:', error);
@@ -33,14 +32,36 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+            const targetElement = document.querySelector(this.getAttribute('href'));
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         });
     });
 });
 
-// Hàm logout
+// Hàm cập nhật tất cả avatars
+function updateAllAvatars(avatarSrc) {
+    const avatarElements = document.querySelectorAll('.admin-main-avatar, .user-pics-info');
+    avatarElements.forEach(avatar => {
+        avatar.src = avatarSrc;
+        avatar.onerror = function() {
+            avatar.src = '../assets/images/userdefault.png';
+        };
+    });
+}
+
+// Lắng nghe sự kiện thay đổi avatar
+window.addEventListener('avatarChanged', function() {
+    const newAvatar = localStorage.getItem('userAvatar');
+    if (newAvatar) {
+        updateAllAvatars(newAvatar);
+    }
+});
+
+// Hàm logout cập nhật
 function logout() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userAvatar');

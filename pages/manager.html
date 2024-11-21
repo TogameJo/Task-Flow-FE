@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon/favicon-96x96.png">
+    <!-- reset css -->
+    <link rel="stylesheet" href="../css/reset.css">
+    <!-- styles -->
+    <link rel="stylesheet" href="../css/styles.css">
+    <!-- font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <title>Task Manager</title>
+</head>
+<body>
+    <!-- Header giống home.html -->
+    <header class="header fixed">
+        <div class="main-content">
+            <div class="body">
+                <!-- Logo -->
+                <a href="home.html"><img src="../assets/images/logo2.png" alt="logo" class="logo"></a>
+                
+                <!-- Navigation -->
+                <nav class="nav">
+                    <ul>
+                        <li><a href="home.html">Home</a></li>
+                        <li class="active"><a href="manager.html">Manager</a></li>
+                    </ul>
+                </nav>
+
+                <!-- User Menu -->
+                <div class="action">
+                    <div>
+                        <img src="../assets/images/userdefault.png" alt="avt" 
+                             class="admin-main-avatar" 
+                             id="user-avatar" 
+                             onclick="toggleMenu()">
+                    </div>
+                    <div class="sub-menu-wrap" id="Submenu">
+                        <div class="sub-menu">
+                            <div class="user-info">
+                                <img class="user-pics-info" src="../assets/images/userdefault.png" alt="avt">
+                                <h2 class="user-name-info" id="user-name">User</h2>
+                            </div>
+                            <hr>
+                            <a href="profile.html" class="menu-section">
+                                <div class="menu-section-icon"><i class="fa-solid fa-user"></i></div>
+                                <p>Edit Profile</p>
+                                <span>></span>
+                            </a>
+                            <a href="#" class="menu-section" onclick="logout(); return false;">
+                                <div class="menu-section-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+                                <p>Log Out</p>
+                                <span>></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="manager-content">
+        <div class="task-container">
+            <!-- Task Controls -->
+            <div class="task-controls">
+                <button class="add-task-btn" onclick="showAddTaskForm()">
+                    <i class="fas fa-plus"></i> Add New Task
+                </button>
+                <div class="task-filters">
+                    <select id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <select id="priorityFilter">
+                        <option value="all">All Priority</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Task List -->
+            <div class="task-list" id="taskList">
+                <!-- Tasks will be added here dynamically -->
+            </div>
+        </div>
+
+        <!-- Add Task Modal -->
+        <div id="addTaskModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddTaskForm()">&times;</span>
+                <h2>Add New Task</h2>
+                <form id="addTaskForm">
+                    <div class="form-group">
+                        <label for="taskTitle">Title:</label>
+                        <input type="text" id="taskTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">Description:</label>
+                        <textarea id="taskDescription" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDueDate">Due Date:</label>
+                        <input type="date" id="taskDueDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskPriority">Priority:</label>
+                        <select id="taskPriority" required>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">Add Task</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/manager.js"></script>
+</body>
+</html>
