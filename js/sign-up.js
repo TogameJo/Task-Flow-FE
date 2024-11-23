@@ -49,7 +49,7 @@ document.querySelector('form').addEventListener('submit', async (e) => {
             if (data.message && data.message.includes('Email already exists')) {
                 showMessage('Email has been used.', true);
             } else {
-                showMessage('An error occurred. Please try again.', true);
+                showMessage('Email already exists.', true);
             }
         }
     } catch (error) {

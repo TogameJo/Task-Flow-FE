@@ -26,16 +26,36 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         const data = await response.json();
 
         if (response.ok && data?.data?.access_token) {
-            // Đăng nhập thành công
-            localStorage.setItem('accessToken', data.data.access_token);
-            localStorage.setItem('userData', JSON.stringify(data.data.user));
-            localStorage.setItem('isLoggedIn', 'true');
+            // Tạo một object chứa toàn bộ thông tin user
+            const userInfo = {
+                accessToken: data.data.access_token,
+                refreshToken: data.data.refresh_token,
+                userId: data.data.id,
+                isLoggedIn: true
+            };
 
-            // Hiển thị thông báo thành công
+            // Gọi API users để lấy thông tin người dùng
+            try {
+                const userResponse = await fetch('http://localhost:8080/api/v1/users', {
+                    headers: {
+                        'Authorization': `Bearer ${data.data.access_token}`
+                    }
+                });
+                const userData = await userResponse.json();
+                
+                if (userData?.data?.[0]?.name) {
+                    userInfo.userName = userData.data[0].name;
+                }
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+
+            // Lưu toàn bộ thông tin vào sessionStorage thay vì localStorage
+            sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+            
             errorMessage.style.color = 'green';
             errorMessage.textContent = 'Login successful!';
-
-            // Chuyển hướng sau 1.5 giây
+            
             setTimeout(() => {
                 window.location.href = 'home.html';
             }, 1000);
@@ -51,39 +71,3 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     }
 });
 // Trong phần xử lý đăng nhập thành công
-async function handleSignIn(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    try {
-        const response = await fetch('http://localhost:8080/api/v1/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-        
-        if (data.status_code === 200) {
-            // Lưu thông tin người dùng
-            localStorage.setItem('accessToken', data.data.token);
-            localStorage.setItem('userId', data.data.user.id);
-            localStorage.setItem('name', data.data.user.name); // Lưu tên từ database
-            localStorage.setItem('email', data.data.user.email);
-            
-            showNotification('Login successful!', 'success');
-            setTimeout(() => {
-                window.location.href = 'home.html';
-            }, 1500);
-        } else {
-            showNotification(data.message || 'Login failed', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showNotification('Error during login', 'error');
-    }
-}

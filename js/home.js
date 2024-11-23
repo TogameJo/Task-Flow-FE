@@ -1,10 +1,10 @@
+// Kiểm tra đăng nhập
 document.addEventListener('DOMContentLoaded', function() {
-    // Kiểm tra đăng nhập
-    if (!localStorage.getItem('accessToken')) {
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+    if (!userInfo.accessToken) {
         window.location.href = 'sign-in.html';
         return;
     }
-
     loadUserInfo();
 
     // Xử lý smooth scroll cho các internal links
@@ -23,8 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Hàm load thông tin user
 async function loadUserInfo() {
-    // Lấy thông tin user từ localStorage
-    const userName = localStorage.getItem('userName') || 'User';
+    // Lấy thông tin user từ sessionStorage
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+    const userName = userInfo.userName || 'User';
     const userAvatar = localStorage.getItem('userAvatar') || '../assets/images/userdefault.png';
 
     // Cập nhật tên user
@@ -37,7 +38,6 @@ async function loadUserInfo() {
     const avatarElements = document.querySelectorAll('.admin-main-avatar, .user-pics-info');
     avatarElements.forEach(element => {
         element.src = userAvatar;
-        // Xử lý lỗi khi load ảnh
         element.onerror = function() {
             element.src = '../assets/images/userdefault.png';
         };
@@ -61,9 +61,6 @@ function toggleMenu() {
 
 // Hàm logout
 function logout() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userName');
-    // Không xóa avatar để giữ lại ảnh đã cập nhật
+    sessionStorage.clear(); // Xóa toàn bộ session storage
     window.location.href = 'sign-in.html';
 }

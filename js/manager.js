@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    if (!localStorage.getItem('accessToken')) {
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+    if (!userInfo.accessToken) {
         window.location.href = 'sign-in.html';
         return;
     }
-
     loadUserInfo();
     loadTasks();
 
@@ -213,7 +213,8 @@ function showNotification(message, type) {
 
 async function loadUserInfo() {
     // Lấy thông tin user từ localStorage
-    const userName = localStorage.getItem('userName') || 'User';
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+    const userName = userInfo.userName || 'User';
     const userAvatar = localStorage.getItem('userAvatar') || '../assets/images/userdefault.png';
 
     // Cập nhật tên user
@@ -236,11 +237,9 @@ function toggleMenu() {
     }
 }
 
+// Trong hàm logout
 function logout() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userName');
-    // Không xóa avatar để giữ lại ảnh đã cập nhật
+    sessionStorage.clear();
     window.location.href = 'sign-in.html';
 }
 

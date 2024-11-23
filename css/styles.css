@@ -997,96 +997,199 @@ form input {
 .manager-menu .manager-items{
     cursor: pointer;
 }
-/* ============================================user management================================================================ */
-.search input[type="text"]{
-    height: 34px;
-    width: 250px;
-    min-width: 40px;
-    margin-right: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.297);
-    border-radius: 4px;
-}
-.search{
-    position: relative;
-    right: 18%;
-    display: flex;
-    align-items: center;
-}
-.search a{
-    font-size: 25px;
-    cursor: pointer;
-}
-.header2{
-    height: 60px;
-    background-color: #086dff;
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-.header2 .home{
-    width: 100px;
-    gap: 12px;
-    display: flex;
-    color: #fff;
-    cursor: pointer;
-}
-.header2 .home1{
-    margin-left: 100px;
-}
-.header2 .user{
-    margin-left: 80px;
-}
-.header2 .job{
-    margin-left: 80px;
-}
-.header2 .home a:hover{
+/* ============================================read more================================================================ */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+}
+
+.popup-content {
+    position: relative;
     background-color: #fff;
-    color: black;
-    border-radius: 10px;
-}
-.header2 .home i{
-    font-size: 24px;
-    text-decoration: none;
-    color: #fff;
-    align-self: center;
-}
-.header2 .home a{
-    font-size: 2rem;
-    text-wrap: nowrap;
-    align-self: end;
-    padding: 10px;
-    color: #fff;
-}
-.header2 .job{
-    margin-left: 30px;
-}
-.user-table table {
-    width: 100%;
-    border-collapse: collapse;
+    margin: 5% auto;
+    padding: 20px;
+    width: 70%;
+    max-width: 800px;
+    border-radius: 8px;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
-.user-table th, .user-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
-}
-
-.user-table th {
-    background-color: #f4f4f4;
-}
-
-.user-table button {
-    padding: 5px 10px;
-    border: none;
-    color: #fff;
+.close-popup {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    font-weight: bold;
     cursor: pointer;
+    color: #666;
 }
 
-.user-table button:hover {
-    opacity: 0.8;
+.close-popup:hover {
+    color: #000;
 }
 
+.popup-body {
+    margin-top: 20px;
+}
+
+.popup-section {
+    margin-bottom: 30px;
+}
+
+.popup-section h3 {
+    color: #2d3436;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.popup-section ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.popup-section ul li {
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.popup-section ul li:before {
+    content: "•";
+    color: #0984e3;
+    position: absolute;
+    left: 0;
+}
+
+.popup h2 {
+    color: #0984e3;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+/* Animation cho popup */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.popup.show {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+/* ===============================term conditions===================================== */
+.policy-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+}
+
+.policy-content {
+    position: relative;
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 10px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close-policy {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.close-policy:hover {
+    color: #000;
+}
+
+.policy-body {
+    margin-top: 20px;
+}
+
+.policy-section {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.policy-section:last-child {
+    border-bottom: none;
+}
+
+.policy-section h3 {
+    color: #2d3436;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.policy-section ul {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.policy-section ul li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 15px;
+}
+
+.policy-section ul li:before {
+    content: "•";
+    color: #0984e3;
+    position: absolute;
+    left: 0;
+}
+
+.policy-popup h2 {
+    color: #0984e3;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    font-weight: 700;
+}
+
+/* Animation */
+@keyframes slideIn {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.policy-popup.show {
+    display: block;
+}
+
+.policy-popup.show .policy-content {
+    animation: slideIn 0.3s ease-out;
+}
 /* ==============================manager=========================================== */
 
 /* Manager Page Styles */
