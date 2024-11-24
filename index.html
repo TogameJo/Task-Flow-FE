@@ -21,6 +21,28 @@
     <title>Home</title>
     <link rel="favicon" href="">
     <script src="./js/index.js"></script>
+    <style>
+        .feed-list.hidden {
+        display: none;
+        }
+
+        .feed-list.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+    </style>
 </head>
 <body style="height: 2800px; overflow: auto;"  class="main_body">
     <!-- <div class="mess icon-bottom">
@@ -46,9 +68,6 @@
                         <li><a href="#footer" class="">Contact</a></li>
                     </ul>
                 </nav>
-               
-              
-                
                 <!-- btn -->
                  <div class="action">
                     <ul>
@@ -244,6 +263,65 @@
                         </div>      
                     </div>
                 </div>
+                <div class="feed-list hidden">
+                    <img src="./assets/images/emma.webp" alt="anh4" class="thumb">
+                    <div class="feedback">
+                        <div class="feed-head">
+                            <h3 class="title">Great team collaboration!</h3>
+                            <div class="rating">
+                                <img src="./assets/images/star-rating.png" alt="" class="star">
+                                <span class="star-value">4.7</span>
+                            </div>
+                        </div>
+                        <div class="feed-body">
+                            <p class="article break-all">"TaskFlow has transformed how our team works together. The real-time updates are invaluable."</p>
+                        </div>
+                        <div class="user-rating">
+                            <h3 class="user-name">Emma Wilson</h3>
+                            <img src="./assets/images/emma.webp" alt="useravt" class="user-avt">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feed-list hidden">
+                    <img src="./assets/images/pic5.jpg" alt="anh5" class="thumb">
+                    <div class="feedback">
+                        <div class="feed-head">
+                            <h3 class="title">Perfect for remote teams!</h3>
+                            <div class="rating">
+                                <img src="./assets/images/star-rating.png" alt="" class="star">
+                                <span class="star-value">4.9</span>
+                            </div>
+                        </div>
+                        <div class="feed-body">
+                            <p class="article break-all">"As a remote team leader, TaskFlow keeps everyone aligned and productive."</p>
+                        </div>
+                        <div class="user-rating">
+                            <h3 class="user-name">Michael Chen</h3>
+                            <img src="./assets/images/chen.jpg" alt="useravt" class="user-avt" >
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feed-list hidden">
+                    <img src="./assets/images/pic6.jpg" alt="anh6" class="thumb">
+                    <div class="feedback">
+                        <div class="feed-head">
+                            <h3 class="title">Exceptional customer support!</h3>
+                            <div class="rating">
+                                <img src="./assets/images/star-rating.png" alt="" class="star">
+                                <span class="star-value">5</span>
+                            </div>
+                        </div>
+                        <div class="feed-body">
+                            <p class="article break-all">"Not only is the platform great, but their support team is always there when needed."</p>
+                        </div>
+                        <div class="user-rating">
+                            <h3 class="user-name">Sophie Martinez</h3>
+                            <img src="./assets/images/1000_F_391347204_XaDg0S7PtbzJRoeow3yWO1vK4pnqBVQY.jpg" alt="useravt" class="user-avt">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -318,9 +396,9 @@
                     <h3 class="footer-heading">Subscribe</h3>
                     <p class="footer-desc">Subscribe our newletter for the latest update of TaskFlow</p>
 
-                    <form class="footer-form" action="">
-                        <input class="footer-form-imput" type="email" placeholder="Enter Your Email">
-                        <input class="footer-form-submit" type="submit" value="Subcribe">
+                    <form class="footer-form" id="subscribeForm">
+                        <input class="footer-form-input" type="email" placeholder="Enter Your Email" required>
+                        <button class="footer-form-submit" type="submit">Subscribe</button>
                     </form>
                 </div>
             </div>
@@ -333,39 +411,255 @@
              </div>
         </div>
     </section>
-    <!-- Thêm vào cuối file, trước </body> -->
-<div id="readMorePopup" class="popup">
-    <div class="popup-content">
-        <span class="close-popup">&times;</span>
-        <h2>About TaskFlow</h2>
-        <div class="popup-body">
-            <section class="popup-section">
-                <h3>Our Mission</h3>
-                <p>At TaskFlow, we're committed to revolutionizing how teams and individuals manage their work. Our platform combines powerful features with intuitive design to create the most efficient task management experience possible.</p>
-            </section>
-
-            <section class="popup-section">
-                <h3>Key Features</h3>
-                <ul>
-                    <li><strong>Smart Task Management:</strong> Organize tasks with intelligent categorization and priority settings</li>
-                    <li><strong>Real-time Collaboration:</strong> Work together seamlessly with team members</li>
-                    <li><strong>Advanced Analytics:</strong> Track progress and productivity with detailed insights</li>
-                    <li><strong>Custom Workflows:</strong> Create and optimize workflows that match your team's needs</li>
-                    <li><strong>Secure Platform:</strong> Enterprise-grade security to protect your data</li>
-                </ul>
-            </section>
-
-            <section class="popup-section">
-                <h3>Why Choose TaskFlow?</h3>
-                <ul>
-                    <li>Intuitive and user-friendly interface</li>
-                    <li>Regular updates and new features</li>
-                    <li>24/7 customer support</li>
-                    <li>Flexible pricing plans</li>
-                    <li>Cross-platform compatibility</li>
-                </ul>
-            </section>
+    <div id="readMorePopup" class="readmore-popup">
+        <div class="readmore-content">
+            <div class="readmore-header">
+                <div class="header-logo">
+                    <i class="fa-solid fa-tasks"></i>
+                    <h2>TaskFlow</h2>
+                </div>
+                <span class="readmore-close">&times;</span>
+            </div>
+            
+            <div class="readmore-body">
+                <div class="readmore-hero">
+                    <h1>About Our Platform</h1>
+                    <p class="hero-subtitle">Revolutionizing Task Management</p>
+                </div>
+    
+                <div class="readmore-grid">
+                    <div class="grid-item mission">
+                        <div class="item-icon">
+                            <i class="fa-solid fa-rocket"></i>
+                        </div>
+                        <h3>Our Mission</h3>
+                        <p>At TaskFlow, we're committed to revolutionizing how teams and individuals manage their work. Our platform combines powerful features with intuitive design.</p>
+                    </div>
+    
+                    <div class="grid-item vision">
+                        <div class="item-icon">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+                        <h3>Our Vision</h3>
+                        <p>Creating a world where task management is effortless, collaborative, and enjoyable for everyone.</p>
+                    </div>
+    
+                    <div class="grid-item features">
+                        <div class="item-icon">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <h3>Key Features</h3>
+                        <ul>
+                            <li style="--i:1"><i class="fa-solid fa-check"></i> Smart Task Management</li>
+                            <li style="--i:2"><i class="fa-solid fa-check"></i> Real-time Collaboration</li>
+                            <li style="--i:3"><i class="fa-solid fa-check"></i> Advanced Analytics</li>
+                            <li style="--i:4"><i class="fa-solid fa-check"></i> Custom Workflows</li>
+                        </ul>
+                    </div>
+    
+                    <div class="grid-item benefits">
+                        <div class="item-icon">
+                            <i class="fa-solid fa-gift"></i>
+                        </div>
+                        <h3>Why Choose Us</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> User-friendly Interface</li>
+                            <li><i class="fa-solid fa-check"></i> 24/7 Support</li>
+                            <li><i class="fa-solid fa-check"></i> Regular Updates</li>
+                            <li><i class="fa-solid fa-check"></i> Flexible Pricing</li>
+                        </ul>
+                    </div>
+                </div>
+    
+                <div class="readmore-footer">
+                    <div class="footer-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">10K+</span>
+                            <span class="stat-label">Active Users</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Countries</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">99%</span>
+                            <span class="stat-label">Satisfaction</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+<!-- Popup cho Schedule -->
+<div id="schedulePopup" class="popup">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h2><i class="fa-solid fa-calendar"></i> Schedule Management</h2>
+            <span class="close-popup">&times;</span>
+        </div>
+        <div class="popup-body">
+            <div class="popup-image">
+                <img src="./assets/images/features/schedule.jpg" alt="Schedule Feature">
+            </div>
+            <div class="popup-info">
+                <h3>Smart Scheduling Features</h3>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> Drag-and-drop calendar interface</li>
+                    <li><i class="fa-solid fa-check"></i> Automated scheduling suggestions</li>
+                    <li><i class="fa-solid fa-check"></i> Real-time availability updates</li>
+                    <li><i class="fa-solid fa-check"></i> Recurring task scheduling</li>
+                    <li><i class="fa-solid fa-check"></i> Time zone management</li>
+                </ul>
+                <div class="popup-description">
+                    <p>Efficiently manage your team's schedule with our intuitive calendar system. Perfect for both small teams and large organizations.</p>
+                </div>
+            </div>
+        </div>
+        <div class="popup-footer">
+            <button class="popup-nav prev" disabled><i class="fa-solid fa-chevron-left"></i> Previous</button>
+            <button class="popup-nav next">Next <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- Popup cho Worksheet -->
+<div id="worksheetPopup" class="popup">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h2><i class="fa-solid fa-file"></i> Digital Worksheets</h2>
+            <span class="close-popup">&times;</span>
+        </div>
+        <div class="popup-body">
+            <div class="popup-image">
+                <img src="./assets/images/features/worksheet.jpg" alt="Worksheet Feature">
+            </div>
+            <div class="popup-info">
+                <h3>Digital Worksheet Tools</h3>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> Customizable templates</li>
+                    <li><i class="fa-solid fa-check"></i> Digital form creation</li>
+                    <li><i class="fa-solid fa-check"></i> Automatic calculations</li>
+                    <li><i class="fa-solid fa-check"></i> Document storage</li>
+                    <li><i class="fa-solid fa-check"></i> Version control system</li>
+                </ul>
+                <div class="popup-description">
+                    <p>Create and manage digital worksheets with ease. Our system helps you go paperless while maintaining efficiency.</p>
+                </div>
+            </div>
+        </div>
+        <div class="popup-footer">
+            <button class="popup-nav prev"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+            <button class="popup-nav next">Next <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- Popup cho Job Confirmations -->
+<div id="jobConfirmationsPopup" class="popup">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h2><i class="fa-solid fa-clipboard-check"></i> Job Confirmations</h2>
+            <span class="close-popup">&times;</span>
+        </div>
+        <div class="popup-body">
+            <div class="popup-image">
+                <img src="./assets/images/features/confirmation.jpg" alt="Job Confirmation Feature">
+            </div>
+            <div class="popup-info">
+                <h3>Confirmation System</h3>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> Automated confirmation emails</li>
+                    <li><i class="fa-solid fa-check"></i> Digital signatures</li>
+                    <li><i class="fa-solid fa-check"></i> Status tracking</li>
+                    <li><i class="fa-solid fa-check"></i> Client approval system</li>
+                    <li><i class="fa-solid fa-check"></i> Audit trail</li>
+                </ul>
+                <div class="popup-description">
+                    <p>Streamline your job confirmation process with automated systems and digital signatures.</p>
+                </div>
+            </div>
+        </div>
+        <div class="popup-footer">
+            <button class="popup-nav prev"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+            <button class="popup-nav next">Next <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- Popup cho Security -->
+<div id="securityPopup" class="popup">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h2><i class="fa-solid fa-shield"></i> Security Features</h2>
+            <span class="close-popup">&times;</span>
+        </div>
+        <div class="popup-body">
+            <div class="popup-image">
+                <img src="./assets/images/features/security.jpg" alt="Security Feature">
+            </div>
+            <div class="popup-info">
+                <h3>Advanced Security</h3>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> End-to-end encryption</li>
+                    <li><i class="fa-solid fa-check"></i> Two-factor authentication</li>
+                    <li><i class="fa-solid fa-check"></i> Regular security audits</li>
+                    <li><i class="fa-solid fa-check"></i> Data backup systems</li>
+                    <li><i class="fa-solid fa-check"></i> Access control management</li>
+                </ul>
+                <div class="popup-description">
+                    <p>Your data security is our top priority. We implement industry-leading security measures to protect your information.</p>
+                </div>
+            </div>
+        </div>
+        <div class="popup-footer">
+            <button class="popup-nav prev"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+            <button class="popup-nav next">Next <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+<!-- Popup cho Comments -->
+<div id="commentsPopup" class="popup">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h2><i class="fa-solid fa-comments"></i> Comments & Feedback</h2>
+            <span class="close-popup">&times;</span>
+        </div>
+        <div class="popup-body">
+            <div class="popup-image">
+                <img src="./assets/images/features/comments.jpg" alt="Comments Feature">
+            </div>
+            <div class="popup-info">
+                <h3>Communication Tools</h3>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> Real-time commenting system</li>
+                    <li><i class="fa-solid fa-check"></i> Task-specific discussions</li>
+                    <li><i class="fa-solid fa-check"></i> @mentions and notifications</li>
+                    <li><i class="fa-solid fa-check"></i> File attachments in comments</li>
+                    <li><i class="fa-solid fa-check"></i> Comment history tracking</li>
+                </ul>
+                <div class="popup-description">
+                    <p>Foster team collaboration with our comprehensive commenting system. Keep all task-related discussions organized and accessible in one place.</p>
+                </div>
+            </div>
+        </div>
+        <div class="popup-footer">
+            <button class="popup-nav prev"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+            <button class="popup-nav next" disabled>Next <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+<!-- Thêm popup emai -->
+<div id="subscribePopup" class="subscribe-popup">
+    <div class="subscribe-content">
+        <div class="subscribe-icon">
+            <i class="fa-solid fa-envelope-circle-check"></i>
+        </div>
+        <h3>Thank You for Subscribing!</h3>
+        <p>We've received your email and will contact you as soon as possible.</p>
+        <div class="subscribe-check">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <button class="subscribe-close">OK</button>
     </div>
 </div>
 <script src="./js/readmore.js"></script>
