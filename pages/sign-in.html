@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Sen:wght@400..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Sign-in</title>
 </head>
 <body class="body_login" style="height: 70rem;">
@@ -47,12 +48,33 @@
             <label for="exampleInputEmail">Email</label>
             <input type="email" class="form-control" name="email" id="exampleInputEmail" required>
             <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" name="password" id="exampleInputPassword1" required>
+            <div class="password-container">
+                <input type="password" class="form-control" name="password" id="exampleInputPassword1" required>
+                <span class="toggle-password" onclick="togglePassword()">
+                    <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                </span>
+            </div>
             <input type="submit" value="Submit">
             <div class="homeback"><a href="../index.html">Back to Home</a></div>
         </form>
     </div>
     <p class="para-2">Not have an account? <a href="sign-up.html">Sign up here</a></p>
     <script src="../js/sign-in.js"></script>
+    <script>
+function togglePassword() {
+    const passwordInput = document.getElementById('exampleInputPassword1');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
+    </script>
 </body>
 </html>

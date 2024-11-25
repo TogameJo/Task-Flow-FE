@@ -345,8 +345,8 @@ a {
     transform: scale(1.2);
 }
 
-    /* @media: Đây là một quy tắc trong CSS 
-    cho phép bạn áp dụng các kiểu dáng khác nhau dựa trên các đặc điểm của thiết bị, như kích thước màn hình. */
+    /* @media: quy tắc trong CSS 
+    áp dụng các kiểu dáng khác nhau dựa trên các đặc điểm của thiết bị, như kích thước màn hình. */
 @media screen and (max-width: 700px) {
     /* Điều kiện thay đổi: chiều dài <= 768px */
     .about-us .about-content{
@@ -831,6 +831,17 @@ form input {
 .message{
     text-align: center;
 }
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px; /* Điều chỉnh vị trí của biểu tượng con mắt */
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
 /* =============================================================== Sign-In ====================================================== */
 .body_login{
     background-image: var(--background-image);
@@ -1205,6 +1216,142 @@ form input {
         opacity: 1;
         transform: translateY(0);
     }
+}
+.grid-item {
+    position: relative;
+    overflow: hidden;
+    background: rgba(248, 249, 250, 0.9);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.grid-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(45, 136, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+.grid-item:hover::before {
+    transform: translateX(100%);
+}
+
+/* Thêm hiệu ứng cho item-icon */
+.item-icon {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(45, 136, 255, 0.2);
+    animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Hiệu ứng cho stats */
+.stat-number {
+    background: linear-gradient(45deg, #2d88ff, #1a73e8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: numberPulse 2s ease-in-out infinite;
+}
+
+@keyframes numberPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Hiệu ứng cho readmore */
+.readmore-hero h1 {
+    background: linear-gradient(120deg, #333, #2d88ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientFlow 3s linear infinite;
+    background-size: 200% auto;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+.grid-item ul li {
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
+.grid-item:hover ul li {
+    transform: translateX(10px);
+    transition-delay: calc(0.1s * var(--i));
+}
+
+.grid-item {
+    position: relative;
+}
+
+.grid-item::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(45, 136, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.grid-item:active::after {
+    width: 200%;
+    height: 200%;
+}
+
+/* Animation cho đóng popup */
+.readmore-popup.closing .readmore-content {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+/* Animation cho grid items và stats */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+.grid-item, .stat-item {
+    opacity: 0;
+}
+
+.readmore-close {
+    transition: transform 0.3s ease;
+}
+
+.readmore-close:hover {
+    transform: rotate(90deg);
+    color: #ff4444;
 }
 /* ===============================term conditions===================================== */
 .policy-popup {
@@ -1583,154 +1730,7 @@ form input {
 .popup-nav:not(:disabled) {
     animation: buttonPulse 2s infinite;
 }
-/* ======================================readmore========================================== */
-/* Thêm hiệu ứng cho grid items */
-.grid-item {
-    /* Giữ nguyên style cũ */
-    position: relative;
-    overflow: hidden;
-    background: rgba(248, 249, 250, 0.9);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
 
-/* Thêm hiệu ứng gradient hover */
-.grid-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, transparent, rgba(45, 136, 255, 0.1), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.6s;
-}
-
-.grid-item:hover::before {
-    transform: translateX(100%);
-}
-
-/* Thêm hiệu ứng cho item-icon */
-.item-icon {
-    /* Giữ nguyên style cũ */
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(45, 136, 255, 0.2);
-    animation: floatIcon 3s ease-in-out infinite;
-}
-
-@keyframes floatIcon {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-/* Hiệu ứng cho stats */
-.stat-number {
-    /* Giữ nguyên style cũ */
-    background: linear-gradient(45deg, #2d88ff, #1a73e8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: numberPulse 2s ease-in-out infinite;
-}
-
-@keyframes numberPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-/* Hiệu ứng cho readmore-hero */
-.readmore-hero h1 {
-    /* Giữ nguyên style cũ */
-    background: linear-gradient(120deg, #333, #2d88ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientFlow 3s linear infinite;
-    background-size: 200% auto;
-}
-
-@keyframes gradientFlow {
-    0% { background-position: 0% center; }
-    100% { background-position: 200% center; }
-}
-
-/* Hiệu ứng cho list items */
-.grid-item ul li {
-    /* Giữ nguyên style cũ */
-    transform: translateX(0);
-    transition: transform 0.3s ease;
-}
-
-.grid-item:hover ul li {
-    transform: translateX(10px);
-    transition-delay: calc(0.1s * var(--i));
-}
-
-/* Thêm hiệu ứng ripple khi click */
-.grid-item {
-    position: relative;
-}
-
-.grid-item::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(45, 136, 255, 0.2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
-
-.grid-item:active::after {
-    width: 200%;
-    height: 200%;
-}
-
-/* Animation cho đóng popup */
-.readmore-popup.closing .readmore-content {
-    animation: fadeOut 0.3s ease-out forwards;
-}
-
-/* Animation cho grid items và stats */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-}
-
-/* Đảm bảo các item ẩn ban đầu */
-.grid-item, .stat-item {
-    opacity: 0;
-}
-
-/* Animation cho nút close */
-.readmore-close {
-    transition: transform 0.3s ease;
-}
-
-.readmore-close:hover {
-    transform: rotate(90deg);
-    color: #ff4444;
-}
 /* ======================================email popup========================================== */
 .subscribe-popup {
     display: none;
@@ -1937,4 +1937,47 @@ form input {
 .submit-btn:hover {
     background-color: #45a049;
 }
+.search-container {
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 5px;
+    margin-right: 10px;
+    width: 300px;
+}
 
+.search-container input {
+    border: none;
+    outline: none;
+    padding: 8px;
+    width: 100%;
+    font-size: 14px;
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.search-btn:hover {
+    color: #333;
+}
+
+.task-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.task-filters {
+    display: flex;
+    gap: 10px;
+}

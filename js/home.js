@@ -11,7 +11,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const targetElement = document.querySelector(this.getAttribute('href'));
+            const href = this.getAttribute('href');
+            
+            // Bỏ qua các href như "#!" hoặc chỉ "#"
+            if (href === '#!' || href === '#') {
+                return;
+            }
+
+            const targetElement = document.querySelector(href);
             if (targetElement) {
                 targetElement.scrollIntoView({
                     behavior: 'smooth'
