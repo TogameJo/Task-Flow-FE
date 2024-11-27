@@ -1,4 +1,8 @@
+const API_URL = 'http://localhost:8080/api/v1';
+const TASKS_ENDPOINT = `${API_URL}/tasks`;
+console.log('API endpoint:', TASKS_ENDPOINT); // Debug endpoint
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded event fired');
     const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
     if (!userInfo.accessToken) {
         window.location.href = 'sign-in.html';
@@ -7,21 +11,49 @@ document.addEventListener('DOMContentLoaded', function() {
     loadUserInfo();
     loadTasks();
 
+    async function filterTasks() {
+        const statusFilter = document.getElementById('statusFilter').value;
+        const priorityFilter = document.getElementById('priorityFilter').value;
+        const keyword = document.getElementById('searchInput').value.trim();
+
+        try {
+            const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+            const response = await fetch(`${TASKS_ENDPOINT}?keyword=${encodeURIComponent(keyword)}&status=${statusFilter}&priority=${priorityFilter}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${userInfo.accessToken}`,
+                    'language': 'en'
+                }
+            });
+
+            const result = await response.json();
+            if (result.status === 0) {
+                displayTasks(result.data);
+                
+                if (result.data.length === 0) {
+                    showNotification('No tasks found matching your filters', 'info');
+                }
+            } else {
+                showNotification(result.message || 'Error filtering tasks', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Error filtering tasks', 'error');
+        }
+    }
+
     document.getElementById('addTaskForm').addEventListener('submit', handleAddTask);
     document.getElementById('statusFilter').addEventListener('change', filterTasks);
     document.getElementById('priorityFilter').addEventListener('change', filterTasks);
 
-    // Thêm event listener cho thanh tìm kiếm
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.querySelector('.search-btn');
 
-    // Xử lý sự kiện khi nhấn nút tìm kiếm
     searchBtn.addEventListener('click', function() {
         const keyword = searchInput.value.trim();
         loadTasks(keyword);
     });
 
-    // Xử lý sự kiện khi nhấn Enter trong ô tìm kiếm
     searchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             const keyword = searchInput.value.trim();
@@ -29,39 +61,69 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Event listener cho form tạo công việc
-    document.getElementById('addTaskForm').addEventListener('submit', handleAddTask);
-    
-    // Đóng modal khi click bên ngoài
     window.addEventListener('click', function(event) {
         const modal = document.getElementById('addTaskModal');
         if (event.target === modal) {
             closeAddTaskForm();
         }
     });
+
+    // Thêm event listener cho nút Add Task
+    const addTaskBtn = document.querySelector('.add-task-btn');
+    if (addTaskBtn) {
+        addTaskBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Add Task button clicked');
+            showAddTaskForm();
+        });
+    } else {
+        console.error('Add Task button not found');
+    }
+
+    // Thêm event listener cho form submit
+    const addTaskForm = document.getElementById('addTaskForm');
+    if (addTaskForm) {
+        addTaskForm.addEventListener('submit', handleAddTask);
+        console.log('Form submit listener added');
+    } else {
+        console.error('Add Task form not found');
+    }
+
+    // Thêm event listener cho nút close modal
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeAddTaskForm);
+    }
 });
 
 async function handleAddTask(e) {
     e.preventDefault();
+    console.log('handleAddTask called');
     
     const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
-    if (!userInfo.accessToken) {
-        showNotification('Please login first', 'error');
+    console.log('Current userInfo:', userInfo);
+
+    // Kiểm tra token và userId
+    if (!userInfo.accessToken || !userInfo.userId) {
+        showNotification('Invalid session. Please login again', 'error');
         window.location.href = 'sign-in.html';
         return;
     }
 
+    // Format task data theo đúng API spec
     const task = {
         title: document.getElementById('taskTitle').value,
         description: document.getElementById('taskDescription').value,
         date: document.getElementById('taskDueDate').value,
         priority: getPriorityValue(document.getElementById('taskPriority').value),
-        status: 0, // PENDING
+        status: 0,
         user_id: userInfo.userId
     };
 
+    console.log('Task to be sent:', task);
+
     try {
-        const response = await fetch('http://localhost:8080/api/v1/tasks', {
+        const response = await fetch(TASKS_ENDPOINT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,16 +133,31 @@ async function handleAddTask(e) {
             body: JSON.stringify(task)
         });
 
-        const data = await response.json();
-        if (data.status_code === 200) {
+        console.log('Response status:', response.status);
+
+        // Kiểm tra status code trước khi parse response
+        if (!response.ok) {
+            if (response.status === 401) {
+                showNotification('Session expired. Please login again', 'error');
+                sessionStorage.removeItem('userInfo');
+                window.location.href = 'sign-in.html';
+                return;
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('API response:', result);
+
+        if (result.status === 0) {
             showNotification('Task created successfully', 'success');
             closeAddTaskForm();
-            loadTasks(); // Tải lại danh sách công việc
+            loadTasks(); // Reload tasks list
         } else {
-            showNotification(data.message || 'Failed to create task', 'error');
+            showNotification(result.message || 'Failed to create task', 'error');
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error details:', error);
         showNotification('Error creating task', 'error');
     }
 }
@@ -88,23 +165,28 @@ async function handleAddTask(e) {
 async function loadTasks(keyword = '') {
     try {
         const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
-        const response = await fetch(`http://localhost:8080/api/v1/tasks?keyword=${encodeURIComponent(keyword)}`, {
+        const response = await fetch(`${TASKS_ENDPOINT}?keyword=${encodeURIComponent(keyword)}`, {
+            method: 'GET',
             headers: {
                 'Authorization': `Bearer ${userInfo.accessToken}`,
                 'language': 'en'
             }
         });
 
-        const data = await response.json();
-        if (data.status_code === 200) {
-            displayTasks(data.data);
+        const result = await response.json();
+        if (result.status === 0) {
+            // Lưu tasks vào sessionStorage
+            sessionStorage.setItem('tasks', JSON.stringify(result.data));
+            displayTasks(result.data);
             
-            if (keyword && data.data.length === 0) {
+            if (keyword && result.data.length === 0) {
                 showNotification('No tasks found matching your search', 'info');
             }
+        } else {
+            showNotification(result.message || 'Error loading tasks', 'error');
         }
     } catch (error) {
-        console.error('Error loading tasks:', error);
+        console.error('Error:', error);
         showNotification('Error loading tasks', 'error');
     }
 }
@@ -113,24 +195,32 @@ async function updateTaskStatus(taskId, newStatus) {
     try {
         const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
         const task = await getTaskDetails(taskId);
-        task.status = newStatus === 'completed' ? 1 : 0;
+        
+        const updatedTask = {
+            title: task.title,
+            description: task.description,
+            date: task.date,
+            priority: task.priority,
+            status: newStatus === 'completed' ? 1 : 0,
+            user_id: task.user.id
+        };
 
-        const response = await fetch(`http://localhost:8080/api/v1/tasks/${taskId}`, {
+        const response = await fetch(`${TASK_ENDPOINT}/${taskId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userInfo.accessToken}`,
                 'language': 'en'
             },
-            body: JSON.stringify(task)
+            body: JSON.stringify(updatedTask)
         });
 
-        const data = await response.json();
-        if (data.status_code === 200) {
+        const result = await response.json();
+        if (result.status === 0) {
             showNotification('Task updated successfully', 'success');
             loadTasks();
         } else {
-            showNotification(data.message || 'Failed to update task', 'error');
+            showNotification(result.message || 'Failed to update task', 'error');
         }
     } catch (error) {
         console.error('Error:', error);
@@ -145,7 +235,7 @@ async function deleteTask(taskId) {
 
     try {
         const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
-        const response = await fetch(`http://localhost:8080/api/v1/tasks/${taskId}`, {
+        const response = await fetch(`${TASK_ENDPOINT}/${taskId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${userInfo.accessToken}`,
@@ -153,12 +243,17 @@ async function deleteTask(taskId) {
             }
         });
 
-        const data = await response.json();
-        if (data.status_code === 200) {
+        const result = await response.json();
+        if (result.status === 0) {
             showNotification('Task deleted successfully', 'success');
             loadTasks();
+
+            // Xóa task khỏi sessionStorage
+            let tasks = JSON.parse(sessionStorage.getItem('tasks') || '[]');
+            tasks = tasks.filter(task => task.id !== taskId); // Giữ lại các task không bị xóa
+            sessionStorage.setItem('tasks', JSON.stringify(tasks));
         } else {
-            showNotification(data.message || 'Failed to delete task', 'error');
+            showNotification(result.message || 'Failed to delete task', 'error');
         }
     } catch (error) {
         console.error('Error:', error);
@@ -169,18 +264,20 @@ async function deleteTask(taskId) {
 async function getTaskDetails(taskId) {
     try {
         const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
-        const response = await fetch(`http://localhost:8080/api/v1/tasks/${taskId}`, {
+        const response = await fetch(`${TASK_ENDPOINT}/${taskId}`, {
+            method: 'GET',
             headers: {
                 'Authorization': `Bearer ${userInfo.accessToken}`,
                 'language': 'en'
             }
         });
 
-        const data = await response.json();
-        if (data.status_code === 200) {
-            return data.data;
+        const result = await response.json();
+        if (result.status === 0) {
+            return result.data;
+        } else {
+            throw new Error(result.message || 'Failed to get task details');
         }
-        throw new Error(data.message || 'Failed to get task details');
     } catch (error) {
         console.error('Error:', error);
         showNotification('Error getting task details', 'error');
@@ -188,59 +285,69 @@ async function getTaskDetails(taskId) {
     }
 }
 
+function displayTasks(tasks) {
+    const taskList = document.getElementById('taskList');
+    taskList.innerHTML = ''; // Xóa danh sách hiện tại
+
+    if (tasks.length === 0) {
+        taskList.innerHTML = '<div class="no-tasks">No tasks found</div>';
+        return;
+    }
+
+    tasks.forEach(task => {
+        const taskElement = createTaskElement(task);
+        taskList.appendChild(taskElement);
+    });
+}
+
 function createTaskElement(task) {
-    const div = document.createElement('div');
-    div.className = `task-item priority-${task.priority}`;
-    div.innerHTML = `
-        <div class="task-header">
-            <h3>${task.title}</h3>
-            <div class="task-badges">
-                <span class="priority priority-${getPriorityLabel(task.priority).toLowerCase()}">
-                    ${getPriorityLabel(task.priority)}
-                </span>
-                <span class="status status-${getStatusLabel(task.status).toLowerCase()}">
-                    ${getStatusLabel(task.status)}
-                </span>
-            </div>
-        </div>
-        <p class="task-description">${task.description || ''}</p>
-        <div class="task-details">
-            <span><i class="far fa-calendar"></i> ${task.date}</span>
-            <span><i class="far fa-user"></i> ${task.user?.name || 'Unknown'}</span>
-        </div>
-        <div class="task-actions">
-            <button class="btn-progress" onclick="updateTaskStatus('${task.id}', '${task.status === 0 ? 'completed' : 'pending'}')">
-                ${task.status === 0 ? 'Complete' : 'Mark as Pending'}
-            </button>
-            <button class="btn-delete" onclick="deleteTask('${task.id}')">
-                <i class="far fa-trash-alt"></i> Delete
-            </button>
-        </div>
-    `;
-    return div;
-}
+    const taskDiv = document.createElement('div');
+    taskDiv.className = 'task-item';
 
-// Helper functions
-function getPriorityValue(priority) {
-    switch(priority.toLowerCase()) {
-        case 'high': return 2;
-        case 'medium': return 1;
-        case 'low': return 0;
-        default: return 0;
-    }
-}
+    // Tiêu đề công việc
+    const title = document.createElement('h3');
+    title.textContent = task.title;
+    taskDiv.appendChild(title);
 
-function getPriorityLabel(value) {
-    switch(parseInt(value)) {
-        case 2: return 'High';
-        case 1: return 'Medium';
-        case 0: return 'Low';
-        default: return 'Medium';
-    }
-}
+    // Mô tả công việc
+    const description = document.createElement('p');
+    description.textContent = task.description;
+    taskDiv.appendChild(description);
 
-function getStatusLabel(value) {
-    return parseInt(value) === 1 ? 'In Progress' : 'Pending';
+    // Ngày hết hạn
+    const date = document.createElement('p');
+    date.textContent = `Due Date: ${task.date}`;
+    taskDiv.appendChild(date);
+
+    // Ưu tiên
+    const priority = document.createElement('p');
+    priority.textContent = `Priority: ${task.priority}`;
+    taskDiv.appendChild(priority);
+
+    // Trạng thái
+    const status = document.createElement('p');
+    status.textContent = `Status: ${task.status === 0 ? 'Pending' : 'Completed'}`;
+    taskDiv.appendChild(status);
+
+    // Nút cập nhật trạng thái
+    const statusButton = document.createElement('button');
+    statusButton.textContent = task.status === 0 ? 'Mark as Completed' : 'Mark as Pending';
+    statusButton.addEventListener('click', () => {
+        const newStatus = task.status === 0 ? 'completed' : 'pending';
+        updateTaskStatus(task.id, newStatus);
+    });
+    taskDiv.appendChild(statusButton);
+
+    // Nút xóa công việc
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.style.marginLeft = '10px';
+    deleteButton.addEventListener('click', () => {
+        deleteTask(task.id);
+    });
+    taskDiv.appendChild(deleteButton);
+
+    return taskDiv;
 }
 
 function showNotification(message, type = 'info') {
@@ -265,7 +372,7 @@ function showNotification(message, type = 'info') {
 }
 
 async function loadUserInfo() {
-    // Lấy thông tin user từ localStorage
+    // Lấy thông tin user từ sessionStorage
     const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
     const userName = userInfo.userName || 'User';
     const userAvatar = localStorage.getItem('userAvatar') || '../assets/images/userdefault.png';
@@ -290,7 +397,7 @@ function toggleMenu() {
     }
 }
 
-// Trong hàm logout
+// Hàm đăng xuất
 function logout() {
     sessionStorage.clear();
     window.location.href = 'sign-in.html';
@@ -304,20 +411,24 @@ window.addEventListener('storage', function(e) {
 
 // Thêm các hàm mới để xử lý modal và form tạo công việc
 function showAddTaskForm() {
+    console.log('Showing add task form...');
     const modal = document.getElementById('addTaskModal');
-    modal.style.display = 'block';
-    
-    // Reset form
-    document.getElementById('addTaskForm').reset();
-    
-    // Set default date là ngày hôm nay
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('taskDueDate').value = today;
+    console.log('Modal element:', modal);
+    if (modal) {
+        modal.style.display = 'block';
+        console.log('Modal display set to block');
+    } else {
+        console.error('Modal element not found');
+    }
 }
 
 function closeAddTaskForm() {
     const modal = document.getElementById('addTaskModal');
-    modal.style.display = 'none';
+    if (modal) {
+        modal.style.display = 'none';
+        // Reset form
+        document.getElementById('addTaskForm').reset();
+    }
 }
 
 // Thêm CSS cho modal
@@ -326,34 +437,44 @@ document.head.insertAdjacentHTML('beforeend', `
 .modal {
     display: none;
     position: fixed;
-    top: 0;
+    z-index: 1000;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    background-color: rgba(0,0,0,0.5);
 }
 
 .modal-content {
-    position: relative;
-    background-color: #fff;
-    margin: 10% auto;
+    background-color: #fefefe;
+    margin: 15% auto;
     padding: 20px;
-    width: 50%;
+    border: 1px solid #888;
+    width: 80%;
     max-width: 500px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    position: relative;
 }
 
 .close {
-    position: absolute;
-    right: 20px;
-    top: 10px;
-    font-size: 24px;
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
     cursor: pointer;
-    color: #666;
+    position: absolute;
+    right: 10px;
+    top: 5px;
 }
 
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Thêm style cho form */
 .form-group {
     margin-bottom: 15px;
 }
@@ -361,7 +482,6 @@ document.head.insertAdjacentHTML('beforeend', `
 .form-group label {
     display: block;
     margin-bottom: 5px;
-    font-weight: 500;
 }
 
 .form-group input,
@@ -371,12 +491,6 @@ document.head.insertAdjacentHTML('beforeend', `
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 14px;
-}
-
-.form-group textarea {
-    height: 100px;
-    resize: vertical;
 }
 
 .submit-btn {
@@ -386,7 +500,6 @@ document.head.insertAdjacentHTML('beforeend', `
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
     width: 100%;
 }
 
@@ -396,94 +509,11 @@ document.head.insertAdjacentHTML('beforeend', `
 </style>
 `);
 
-// Thêm hàm filterTasks
-function filterTasks() {
-    const statusFilter = document.getElementById('statusFilter').value;
-    const priorityFilter = document.getElementById('priorityFilter').value;
-    const keyword = document.getElementById('searchInput').value.trim();
-
-    try {
-        const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
-        fetch(`http://localhost:8080/api/v1/tasks?keyword=${encodeURIComponent(keyword)}&status=${statusFilter}&priority=${priorityFilter}`, {
-            headers: {
-                'Authorization': `Bearer ${userInfo.accessToken}`,
-                'language': 'en'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status_code === 200) {
-                displayTasks(data.data);
-                
-                // Hiển thị thông báo khi không có kết quả
-                if (data.data.length === 0) {
-                    showNotification('No tasks found matching your filters', 'info');
-                }
-            } else {
-                showNotification('Error filtering tasks', 'error');
-            }
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        showNotification('Error filtering tasks', 'error');
+function getPriorityValue(value) {
+    switch(value) {
+        case '0': return 0; // Low
+        case '1': return 1; // Medium
+        case '2': return 2; // High
+        default: return 0;  // Default to Low
     }
 }
-
-// Cập nhật hàm displayTasks để hiển thị tasks
-function displayTasks(tasks) {
-    const taskList = document.getElementById('taskList');
-    taskList.innerHTML = ''; // Xóa danh sách hiện tại
-
-    if (tasks.length === 0) {
-        taskList.innerHTML = '<div class="no-tasks">No tasks found</div>';
-        return;
-    }
-
-    tasks.forEach(task => {
-        const taskElement = createTaskElement(task);
-        taskList.appendChild(taskElement);
-    });
-}
-
-// Thêm CSS cho thông báo không có tasks
-document.head.insertAdjacentHTML('beforeend', `
-<style>
-.no-tasks {
-    text-align: center;
-    padding: 20px;
-    color: #666;
-    font-style: italic;
-}
-</style>
-`);
-
-// Thêm CSS cho notification
-document.head.insertAdjacentHTML('beforeend', `
-<style>
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 25px;
-    border-radius: 4px;
-    color: white;
-    z-index: 1000;
-    animation: slideIn 0.5s ease-out;
-}
-
-.notification.success { background-color: #4CAF50; }
-.notification.error { background-color: #f44336; }
-.notification.info { background-color: #2196F3; }
-
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-</style>
-`);

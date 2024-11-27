@@ -115,7 +115,7 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
-                <button class="add-task-btn" onclick="showAddTaskForm()">
+                <button class="add-task-btn">
                     <i class="fas fa-plus"></i> Add New Task
                 </button>
                 <div class="task-filters">
@@ -161,9 +161,9 @@
                     <div class="form-group">
                         <label for="taskPriority">Priority:</label>
                         <select id="taskPriority" required>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
+                            <option value="0">Low</option>
+                            <option value="1">Medium</option>
+                            <option value="2">High</option>
                         </select>
                     </div>
                     <button type="submit" class="submit-btn">Add Task</button>
