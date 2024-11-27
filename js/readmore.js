@@ -10,7 +10,7 @@ const utils = {
     }
 };
 
-// ReadMore Popup Handler
+//==========================================readmore==================================
 class ReadMorePopup {
     constructor() {
         this.popup = document.getElementById('readMorePopup');
@@ -65,7 +65,7 @@ class ReadMorePopup {
     }
 }
 
-// Hero Icons Popup Handler
+//==========================================hero icons==================================
 class HeroPopup {
     constructor() {
         this.popups = ['schedule', 'worksheet', 'jobConfirmations', 'security', 'comments'];
@@ -137,7 +137,7 @@ class HeroPopup {
     }
 }
 
-// Feedback Carousel Handler
+//========================================feedback==================================
 class FeedbackCarousel {
     constructor() {
         this.feedbacks = document.querySelectorAll('.feed-list');

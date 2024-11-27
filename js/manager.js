@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    document.getElementById('addTaskForm').addEventListener('submit', handleAddTask);
     document.getElementById('statusFilter').addEventListener('change', filterTasks);
     document.getElementById('priorityFilter').addEventListener('change', filterTasks);
 
@@ -98,29 +97,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function handleAddTask(e) {
     e.preventDefault();
-    console.log('handleAddTask called');
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
     
-    const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
-    console.log('Current userInfo:', userInfo);
+    // Log để kiểm tra
+    console.log('Current user info:', userInfo);
 
-    // Kiểm tra token và userId
-    if (!userInfo.accessToken || !userInfo.userId) {
-        showNotification('Invalid session. Please login again', 'error');
-        window.location.href = 'sign-in.html';
-        return;
-    }
-
-    // Format task data theo đúng API spec
     const task = {
         title: document.getElementById('taskTitle').value,
         description: document.getElementById('taskDescription').value,
         date: document.getElementById('taskDueDate').value,
-        priority: getPriorityValue(document.getElementById('taskPriority').value),
+        priority: parseInt(document.getElementById('taskPriority').value),
         status: 0,
-        user_id: userInfo.userId
+        user_id: userInfo.userId,
+        created_by: userInfo.userId,    // Thêm created_by
+        last_updated_by: userInfo.userId // Thêm last_updated_by
     };
 
-    console.log('Task to be sent:', task);
+    console.log('Task to be created:', task);
 
     try {
         const response = await fetch(TASKS_ENDPOINT, {
@@ -134,59 +127,104 @@ async function handleAddTask(e) {
         });
 
         console.log('Response status:', response.status);
+        const text = await response.text();
+        console.log('Raw response:', text);
 
-        // Kiểm tra status code trước khi parse response
-        if (!response.ok) {
-            if (response.status === 401) {
-                showNotification('Session expired. Please login again', 'error');
-                sessionStorage.removeItem('userInfo');
-                window.location.href = 'sign-in.html';
-                return;
+        try {
+            const result = JSON.parse(text);
+            console.log('Parsed response:', result);
+
+            if (result.status === 0) {
+                showNotification('Task created successfully', 'success');
+                closeAddTaskForm();
+                await loadTasks();
+            } else {
+                showNotification(result.message || 'Failed to create task', 'error');
             }
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('API response:', result);
-
-        if (result.status === 0) {
-            showNotification('Task created successfully', 'success');
-            closeAddTaskForm();
-            loadTasks(); // Reload tasks list
-        } else {
-            showNotification(result.message || 'Failed to create task', 'error');
+        } catch (parseError) {
+            console.error('Error parsing response:', parseError);
+            showNotification('Error processing server response', 'error');
         }
     } catch (error) {
-        console.error('Error details:', error);
-        showNotification('Error creating task', 'error');
+        console.error('Network Error details:', error);
+        showNotification('Error creating task. Please try again.', 'error');
     }
 }
 
+// Thêm hàm kiểm tra và làm mới token
+async function ensureValidToken() {
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+    if (!userInfo.accessToken) {
+        window.location.href = 'sign-in.html';
+        return null;
+    }
+
+    // Decode token để kiểm tra exp
+    const tokenParts = userInfo.accessToken.split('.');
+    const payload = JSON.parse(atob(tokenParts[1]));
+    const exp = payload.exp * 1000; // Convert to milliseconds
+
+    // Nếu token hết hạn hoặc sắp hết hạn, refresh token
+    if (Date.now() >= exp - 60000) { // Check if token expires in 1 minute
+        try {
+            const response = await fetch(`${API_URL}/auth/refresh-token`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    refresh_token: userInfo.refreshToken
+                })
+            });
+
+            const result = await response.json();
+            if (result.status === 0) {
+                userInfo.accessToken = result.data.access_token;
+                userInfo.refreshToken = result.data.refresh_token;
+                sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+                return userInfo.accessToken;
+            }
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+            window.location.href = 'sign-in.html';
+            return null;
+        }
+    }
+
+    return userInfo.accessToken;
+}
+
+// Sửa lại hàm loadTasks
 async function loadTasks(keyword = '') {
     try {
-        const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+        const token = await ensureValidToken();
+        if (!token) return;
+
         const response = await fetch(`${TASKS_ENDPOINT}?keyword=${encodeURIComponent(keyword)}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${userInfo.accessToken}`,
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
                 'language': 'en'
             }
         });
 
+        if (response.status === 401) {
+            sessionStorage.clear();
+            window.location.href = 'sign-in.html';
+            return;
+        }
+
         const result = await response.json();
+        console.log('Load tasks response:', result);
+
         if (result.status === 0) {
-            // Lưu tasks vào sessionStorage
-            sessionStorage.setItem('tasks', JSON.stringify(result.data));
             displayTasks(result.data);
-            
-            if (keyword && result.data.length === 0) {
-                showNotification('No tasks found matching your search', 'info');
-            }
         } else {
             showNotification(result.message || 'Error loading tasks', 'error');
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error loading tasks:', error);
         showNotification('Error loading tasks', 'error');
     }
 }
@@ -287,67 +325,27 @@ async function getTaskDetails(taskId) {
 
 function displayTasks(tasks) {
     const taskList = document.getElementById('taskList');
-    taskList.innerHTML = ''; // Xóa danh sách hiện tại
+    taskList.innerHTML = '';
 
-    if (tasks.length === 0) {
+    if (!tasks || tasks.length === 0) {
         taskList.innerHTML = '<div class="no-tasks">No tasks found</div>';
         return;
     }
 
     tasks.forEach(task => {
-        const taskElement = createTaskElement(task);
+        const taskElement = document.createElement('div');
+        taskElement.className = 'task-item';
+        taskElement.innerHTML = `
+            <h3>${task.title}</h3>
+            <p>${task.description}</p>
+            <p>Due Date: ${task.date}</p>
+            <p>Priority: ${task.priority}</p>
+            <p>Status: ${task.status === 'PENDING' ? 'Pending' : 'In Progress'}</p>
+            <button onclick="updateTaskStatus('${task.id}', '${task.status === 'PENDING' ? 'completed' : 'pending'}')">${task.status === 'PENDING' ? 'Mark as Completed' : 'Mark as Pending'}</button>
+            <button onclick="deleteTask('${task.id}')" style="margin-left: 10px">Delete</button>
+        `;
         taskList.appendChild(taskElement);
     });
-}
-
-function createTaskElement(task) {
-    const taskDiv = document.createElement('div');
-    taskDiv.className = 'task-item';
-
-    // Tiêu đề công việc
-    const title = document.createElement('h3');
-    title.textContent = task.title;
-    taskDiv.appendChild(title);
-
-    // Mô tả công việc
-    const description = document.createElement('p');
-    description.textContent = task.description;
-    taskDiv.appendChild(description);
-
-    // Ngày hết hạn
-    const date = document.createElement('p');
-    date.textContent = `Due Date: ${task.date}`;
-    taskDiv.appendChild(date);
-
-    // Ưu tiên
-    const priority = document.createElement('p');
-    priority.textContent = `Priority: ${task.priority}`;
-    taskDiv.appendChild(priority);
-
-    // Trạng thái
-    const status = document.createElement('p');
-    status.textContent = `Status: ${task.status === 0 ? 'Pending' : 'Completed'}`;
-    taskDiv.appendChild(status);
-
-    // Nút cập nhật trạng thái
-    const statusButton = document.createElement('button');
-    statusButton.textContent = task.status === 0 ? 'Mark as Completed' : 'Mark as Pending';
-    statusButton.addEventListener('click', () => {
-        const newStatus = task.status === 0 ? 'completed' : 'pending';
-        updateTaskStatus(task.id, newStatus);
-    });
-    taskDiv.appendChild(statusButton);
-
-    // Nút xóa công việc
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.style.marginLeft = '10px';
-    deleteButton.addEventListener('click', () => {
-        deleteTask(task.id);
-    });
-    taskDiv.appendChild(deleteButton);
-
-    return taskDiv;
 }
 
 function showNotification(message, type = 'info') {
@@ -515,5 +513,46 @@ function getPriorityValue(value) {
         case '1': return 1; // Medium
         case '2': return 2; // High
         default: return 0;  // Default to Low
+    }
+}
+
+// Thêm hàm để refresh token
+async function refreshToken() {
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+    if (!userInfo.refreshToken) {
+        throw new Error('No refresh token available');
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/auth/refresh-token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                refresh_token: userInfo.refreshToken
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to refresh token');
+        }
+
+        const result = await response.json();
+        if (result.status === 0) {
+            // Cập nhật token mới vào sessionStorage
+            userInfo.accessToken = result.data.access_token;
+            userInfo.refreshToken = result.data.refresh_token;
+            sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+            return userInfo.accessToken;
+        } else {
+            throw new Error(result.message || 'Failed to refresh token');
+        }
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        // Nếu refresh token thất bại, chuyển về trang đăng nhập
+        sessionStorage.clear();
+        window.location.href = 'sign-in.html';
+        throw error;
     }
 }
